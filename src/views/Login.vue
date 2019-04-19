@@ -3,18 +3,26 @@
     <canvas id="Mycanvas"></canvas>
     <div class="loginBox">
         <van-tabs  swipeable>
-            <form>
+            <form autocomplete="off" ref="formdd" @submit.prevent="onSubmit" action="https://www.baidu.com">
                 <van-tab v-for="(item,index) in tabs" :title=item.title :key="item.title">
                     <div class="formItem">
-                        <i  :class=tabs[index].icon01 ></i>
-                        <!-- <input type="text" v-model= formMessage[itm.id01]/> -->
+                        <div class="inpBox">
+                           <i  :class=tabs[index].icon01 ></i>
+                            <input type="text" v-model= formMessage[tabs[index].icon01] /> 
+                        </div>
+                        
+                        <div class="errBox">这是一则提示</div>
                     </div>
                     <div class="formItem">
-                        <i  :class=tabs[index].icon02></i>
-                        <!-- <input type="text" v-model= formMessage[itm.id02]/> -->
+                        <div class="inpBox">
+                            <i  :class=tabs[index].icon02></i>
+                            <input type="text" v-model= formMessage[tabs[index].icon02] />
+                            <van-button type="info" round id="msgBtn" v-if= "index == 1">{{btnmsg}}</van-button>
+                        </div>
+                        <div class="errBox">这是一则提示</div>
                     </div>
                 </van-tab>
-                <van-button round id="loginBtn">圆形按钮</van-button>
+                <van-button native-type="submit" round id="loginBtn">登录</van-button>
             </form>
         </van-tabs>
     </div>
@@ -82,12 +90,62 @@
     }
     #loginBtn {
         width:100%;
-        height:2.4rem;
+        height:75px;
         background-image: linear-gradient(to right , #1890ff 10%,#69c0ff 100%);
         color: #fff;
-        font-size: 14px;/*no*/
+        font-size: 14PX;/*no*/
+    }
+    .formItem {
+        position:relative;
+        margin: 0 0 48px;
+        
     }
 
+    .inpBox {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .formItem input {
+        display: inline-block;
+        box-sizing: border-box;
+        border-radius:12px;
+        width: 100%;
+        padding: 6px 50px 6px 75px;
+        height: 75px;
+        font-size: 16px;
+        border:1px solid #ededed;
+    }
+
+    .formItem input:not(.input-disabled):hover {
+        border-color: #40a9ff;
+        border-right-width: 1px!important;
+        box-shadow: 0 0 5px #40a9ff;
+    }
+
+    .formItem .iconfont {
+        position: absolute;
+        top: 25%;
+        left:20px;
+    }
+    
+    .van-tab__pane:last-of-type .formItem:last-of-type input{
+        width:55%;
+        left: 0px;
+    }
+    
+    #msgBtn {
+        height: 2rem;
+        width: 30%;
+    }
+    
+    .errBox {
+        color: #FF0033;
+        text-align: left;
+        padding: 4px 0;
+        font-size: 14PX;
+        display:none;
+    }
 
     .van-tabs__content {
         padding-top: 1.8rem;
@@ -119,12 +177,36 @@ export default {
                 phone: "",
                 mescode: ""
             },
-            key : "aaa"
-            
+            btnmsg : "发送验证码"
 		}
 	},
 	methods: {
-      
+        checkform: function() {
+            let str = document.querySelector(".van-tab--active").innerText;
+            if(str == "账号登录") {
+                if(!this.formMessage.username) {
+                    document.querySelectorAll(".errBox")[0].innerText = "账号不能为空！";
+                    document.querySelectorAll(".errBox")[0].style.display = "block";
+                }else {
+                    document.querySelectorAll(".errBox")[0].style.display = "none";
+                }
+                if(!this.formMessage.pwd) {
+                console.log(this.formMessage.pwd)
+                    document.querySelectorAll(".errBox")[1].innerText = "密码不能为空！";
+                    document.querySelectorAll(".errBox")[1].style.display = "block";
+                }else {
+                console.log("aaaa")
+                    document.querySelectorAll(".errBox")[1].style.display = "none";
+                }
+            }else {
+                
+            }
+            
+        },
+        onSubmit: function() {
+                this.checkform()
+            return false;
+        }
     },
     mounted(){
     	var WIDTH = window.innerWidth,
